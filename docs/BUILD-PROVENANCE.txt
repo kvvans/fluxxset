@@ -41,8 +41,10 @@ Smoke test:
     [..] [inf] version: 3.3.0
 
 Scope:
-- Only `evilginx2/phishlets/o365.yaml` and `office.yaml` are shipped.
-- Non-M365 phishlets and the duplicate O365 variants were removed.
+- `evilginx2/phishlets/o365.yaml` is the only active phishlet.
+- `docs/variants/office.yaml` is an inactive alternate and must not be loaded
+  alongside `o365`.
+- Non-M365 phishlets and the duplicate legacy variant were removed.
 - The prebuilt binary was removed from the working tree and from all commits.
   This history was rewritten on 2026-11-15; commit hashes from earlier notes
   are obsolete.
