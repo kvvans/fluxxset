@@ -4,3 +4,11 @@ private/
 /phishlets/*
 !/phishlets/*.yaml
 .evilginx_cache
+/evilginx2
+/config.json
+/data.db
+/blacklist.txt
+/*.pem
+/*.key
+/*.crt
+/*.log
