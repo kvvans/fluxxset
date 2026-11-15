@@ -1,0 +1,57 @@
+BUILD PROVENANCE
+================
+
+Date (UTC):        2026-11-15 12:24:40
+Source repository: git@github.com:kvvans/fluxxset.git
+Branch:            main
+Source commit:     1b890b26bfa7aa6aacef694df127308ea6846559
+Working tree:      clean at build time (vcs.modified=false)
+
+Toolchain:         go1.22.12 linux/amd64
+Installed from:    https://go.dev/dl/go1.22.12.linux-amd64.tar.gz
+Install prefix:    /opt/go-1.22.12
+
+Build command (run from evilginx2/):
+
+    CGO_ENABLED=0 GOTOOLCHAIN=local \
+      go build -mod=vendor -trimpath -buildvcs=true \
+      -ldflags "-s -w" -o build/evilginx2 .
+
+Environment:
+    CGO_ENABLED=0
+    GOOS=linux
+    GOARCH=amd64
+    GOAMD64=v1
+
+Output:
+    build/evilginx2  (11 MB)
+    ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
+    Go BuildID=fYa8C28TeCoxBVSYssz5/XzZEm_8yQ0wju4uiGLX5/7wOuwlyKnpy01XWOY3eg/4V648LdEUqlBGx_PuFNP,
+    stripped
+    SHA-256: 0b8d728f181e6ea9c777e9530cbac664853571239d99b8d3a1dbddb8729bb299
+
+Embedded VCS stamp (from `go version -m build/evilginx2`):
+    build vcs=git
+    build vcs.revision=1b890b26bfa7aa6aacef694df127308ea6846559
+    build vcs.time=2026-11-15T12:24:30Z
+    build vcs.modified=false
+
+Smoke test:
+    $ ./build/evilginx2 -v
+    [..] [inf] version: 3.3.0
+
+Scope:
+- Only `evilginx2/phishlets/o365.yaml` and `office.yaml` are shipped.
+- Non-M365 phishlets and the duplicate O365 variants were removed.
+- The prebuilt binary was removed from the working tree and from all commits.
+  This history was rewritten on 2026-11-15; commit hashes from earlier notes
+  are obsolete.
+
+Notes:
+- `build/` is gitignored. To reproduce, check out the commit above, install the
+  same Go toolchain, and run the build command.
+- Verify with:
+    go version -m build/evilginx2
+    sha256sum build/evilginx2
+- Go builds are deterministic for the same toolchain, commit, flags, and
+  environment, and the embedded VCS stamp ties the binary to the source commit.
