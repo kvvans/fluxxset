@@ -1,6 +1,6 @@
 release/
 build/
 private/
-/phishlets
-!/phishlets/example.yaml
+/phishlets/*
+!/phishlets/*.yaml
 .evilginx_cache
